@@ -14,3 +14,9 @@ export const postQuery = groq`*[_type == "post" && slug.current == $slug][0]{
 export const postPathsQuery = groq`*[_type == "post" && defined(slug.current)][]{
     "params": { "slug": slug.current }
   }`;
+
+export const query = groq`*[_type == "post"]{
+  ...,
+  author->,
+  categories[]->,
+} | order(_createdAt desc)`;

@@ -14,6 +14,7 @@ function Header() {
             alt="logo"
           />
         </Link>
+        <h1>The BIODEV</h1>
       </div>
 
       <div>

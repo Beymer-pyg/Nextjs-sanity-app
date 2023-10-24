@@ -1,21 +1,86 @@
 import Link from "next/link";
 import type { SanityDocument } from "@sanity/client";
+import Image from "next/image";
+import urlFor from "../lib/urlFor";
+import category from "@/sanity/schemas/category";
+import { ArrowUpRightIcon } from "@heroicons/react/24/solid";
+import { PortableText } from "@portabletext/react";
+
+/* type Props = {
+  posts: Post[];
+}; */
 
 export default function Posts({ posts = [] }: { posts: SanityDocument[] }) {
-  const title = posts.length === 1 ? `1 Post` : `${posts.length} Posts`;
-
+  // export default function Posts({ posts }: Props) {
+  const title =
+    posts.length === 1 ? `1 Post Today` : `${posts.length} Posts Today`;
+  // divide-y divide-red-600 para que el padre agregue una linea divisoria a los hijos
+  console.log(posts);
   return (
-    <main className="container mx-auto grid grid-cols-1 divide-y divide-red-600">
+    <div>
       <h1 className="text-2xl p-4 font-bold">{title}</h1>
-      {posts.map((post) => (
-        <Link
-          key={post._id}
-          href={post.slug.current}
-          className="p-4 hover:bg-blue-50"
-        >
-          <h2>{post.title}</h2>
-        </Link>
-      ))}
-    </main>
+      <hr className="border-[#F7AB0A] mb-10" />
+
+      <div className="grid grid-cols-1 md:grid-cols-2 px-10 gap-10 gap-y-16 pb-24">
+        {/* Posts */}
+        {posts.map((post) => (
+          <div key={post._id} className="flex flex-col group cursor-pointer">
+            <div className="relative w-full h-80 drop-shadow-xl group-hover:scale-105 transition-transform duration-200 ease-out">
+              <Link
+                key={post._id}
+                href={post.slug.current}
+                className="p-4 hover:bg-blue-50"
+              >
+                {post?.mainImage ? (
+                  <Image
+                    className="object-cover object-left lg:object-center"
+                    src={urlFor(post.mainImage).url()}
+                    alt={post.author.name}
+                    fill
+                  />
+                ) : null}
+                <div className="absolute bottom-0 w-full  bg-opacity-20 bg-black backdrop-blur-lg rounded drop-shadow-lg text-white p-5 flex justify-between">
+                  <div>
+                    <p className="font-bold">{post.title}</p>
+                    <p>
+                      {new Date(post._createdAt).toLocaleDateString("en-US", {
+                        day: "numeric",
+                        month: "long",
+                        year: "numeric",
+                      })}
+                    </p>
+                  </div>
+
+                  <div className="flex flex-col md:flex-row gap-y-2 md:gap-x-2 items-center">
+                    {post.categories.map((category: any) => (
+                      <div
+                        key={category._id}
+                        className="bg-[#F7AB0A] text-center text-black px-3 py-1 rounded-full text-sm font-semibold"
+                      >
+                        <p>{category.title}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </Link>
+            </div>
+
+            <div className="mt-5 flex-1">
+              <p className="line-clamp-2 underline text-lg font-bold">
+                {post.title}
+              </p>
+              <p className="line-clamp-3 text-gray-500">
+                <PortableText value={post.body} />
+              </p>
+            </div>
+
+            <p className="mt-5 font-bold flex items-center group-hover:underline">
+              Read Post
+              <ArrowUpRightIcon className="ml-2 h-4 w-4" />
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }

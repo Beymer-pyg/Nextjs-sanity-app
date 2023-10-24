@@ -11,7 +11,7 @@ import PreviewPost from "@/app/components/PreviewPost";
 export async function generateStaticParams() {
   // Important, use the plain Sanity Client here
   const posts = await client.fetch(postPathsQuery);
-
+  console.log(posts);
   return posts;
 }
 
