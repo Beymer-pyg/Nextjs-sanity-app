@@ -2,9 +2,9 @@ import Link from "next/link";
 import type { SanityDocument } from "@sanity/client";
 import Image from "next/image";
 import urlFor from "../lib/urlFor";
-import category from "@/sanity/schemas/category";
 import { ArrowUpRightIcon } from "@heroicons/react/24/solid";
 import { PortableText } from "@portabletext/react";
+import ClientSideRoute from "./ClientSideRoute";
 
 /* type Props = {
   posts: Post[];
@@ -13,9 +13,8 @@ import { PortableText } from "@portabletext/react";
 export default function Posts({ posts = [] }: { posts: SanityDocument[] }) {
   // export default function Posts({ posts }: Props) {
   const title =
-    posts.length === 1 ? `1 Post Today` : `${posts.length} Posts Today`;
+    posts.length === 1 ? `1 Post Today` : `${posts.length} Posts Today OK`;
   // divide-y divide-red-600 para que el padre agregue una linea divisoria a los hijos
-  console.log(posts);
   return (
     <div>
       <h1 className="text-2xl p-4 font-bold">{title}</h1>
@@ -24,13 +23,14 @@ export default function Posts({ posts = [] }: { posts: SanityDocument[] }) {
       <div className="grid grid-cols-1 md:grid-cols-2 px-10 gap-10 gap-y-16 pb-24">
         {/* Posts */}
         {posts.map((post) => (
-          <div key={post._id} className="flex flex-col group cursor-pointer">
-            <div className="relative w-full h-80 drop-shadow-xl group-hover:scale-105 transition-transform duration-200 ease-out">
-              <Link
-                key={post._id}
-                href={post.slug.current}
-                className="p-4 hover:bg-blue-50"
-              >
+          <ClientSideRoute key={post._id} route={`post/${post.slug.current}`}>
+            <div className="flex flex-col group cursor-pointer">
+              {/* <Link
+              key={post._id}
+              href={`post/${post.slug.current}`}
+              className="p-4 hover:bg-blue-50"
+            > */}
+              <div className="relative w-full h-80 drop-shadow-xl group-hover:scale-105 transition-transform duration-200 ease-out">
                 {post?.mainImage ? (
                   <Image
                     className="object-cover object-left lg:object-center"
@@ -62,23 +62,23 @@ export default function Posts({ posts = [] }: { posts: SanityDocument[] }) {
                     ))}
                   </div>
                 </div>
-              </Link>
-            </div>
+              </div>
 
-            <div className="mt-5 flex-1">
-              <p className="line-clamp-2 underline text-lg font-bold">
-                {post.title}
-              </p>
-              <p className="line-clamp-3 text-gray-500">
-                <PortableText value={post.body} />
-              </p>
-            </div>
+              <div className="mt-5 flex-1">
+                <p className="line-clamp-2 underline text-lg font-bold">
+                  {post.title}
+                </p>
 
-            <p className="mt-5 font-bold flex items-center group-hover:underline">
-              Read Post
-              <ArrowUpRightIcon className="ml-2 h-4 w-4" />
-            </p>
-          </div>
+                <p className="line-clamp-3 text-gray-500">{post.description}</p>
+              </div>
+
+              <p className="mt-5 font-bold flex items-center group-hover:underline">
+                Read Post
+                <ArrowUpRightIcon className="ml-2 h-4 w-4" />
+              </p>
+              {/* </Link> */}
+            </div>
+          </ClientSideRoute>
         ))}
       </div>
     </div>

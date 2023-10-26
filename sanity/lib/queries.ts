@@ -20,3 +20,15 @@ export const query = groq`*[_type == "post"]{
   author->,
   categories[]->,
 } | order(_createdAt desc)`;
+
+export const querySlugPost = groq`*[_type == "post" && slug.current == $slug][0]{
+   ...,
+  author->,
+  categories[]->,
+}`;
+
+export const querySlugPosts = groq`*[_type == "post" && defined(slug.current)]{
+  ...,
+  author->,
+  categories[]->,
+}`;
